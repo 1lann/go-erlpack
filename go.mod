@@ -1,4 +1,4 @@
-module github.com/JakeMakesStuff/go-erlpack
+module github.com/1lann/go-erlpack
 
 go 1.14
 

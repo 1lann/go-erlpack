@@ -5,10 +5,11 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
-	"github.com/jakemakesstuff/structs"
 	"io"
 	"reflect"
 	"unsafe"
+
+	"github.com/jakemakesstuff/structs"
 )
 
 // Contains all the types we want internally for our reader.
@@ -705,6 +706,18 @@ func processItem(setter *pointerSetter, r unpackReader) error {
 
 		// Set the item to the map.
 		Item = m
+	case 'd':
+		b := make([]byte, 2)
+		_, err := r.Read(b)
+		if err != nil {
+			return errors.New("not enough bytes for uint16")
+		}
+		l := binary.BigEndian.Uint16(b)
+
+		buf := make([]byte, l)
+		io.ReadFull(r, buf)
+
+		Item = buf
 	default: // Don't know this data type.
 		return errors.New("unknown data type")
 	}
